@@ -1,4 +1,21 @@
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using PetCareWebApi.Data;
+using PetCareWebApi.Models;
+
 var builder = WebApplication.CreateBuilder(args);
+
+builder.Services.AddDbContext<AppDbContext>(
+    options => options.UseNpgsql("Server=localhost;Port=5432;Database=petcare;User Id=postgres;Password=admin;"));
+// dotnet user-secrets
+
+builder.Services.AddAuthentication();
+builder.Services.AddAuthorization();
+
+builder.Services
+    .AddIdentityApiEndpoints<User>()
+    .AddEntityFrameworkStores<AppDbContext>();
 
 // Add services to the container.
 
@@ -19,6 +36,18 @@ if (app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 
 app.UseAuthorization();
+
+app.MapIdentityApi<User>();
+
+app.MapPost("/logout", 
+    async(SignInManager<User> signInManager, [FromBody] object empty) => 
+    {
+        await signInManager.SignOutAsync();
+        return Results.Ok();
+    });
+
+app.MapGet("/", () => "Hello World!")
+    .RequireAuthorization();
 
 app.MapControllers();
 
