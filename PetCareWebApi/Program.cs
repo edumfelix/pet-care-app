@@ -6,9 +6,10 @@ using PetCareWebApi.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 
+var connectionString = builder.Configuration.GetConnectionString("PsqlConnection");
+
 builder.Services.AddDbContext<AppDbContext>(
-    options => options.UseNpgsql("Server=localhost;Port=5432;Database=petcare;User Id=postgres;Password=admin;"));
-// dotnet user-secrets
+    options => options.UseNpgsql(connectionString));
 
 builder.Services.AddAuthentication();
 builder.Services.AddAuthorization();
@@ -18,6 +19,8 @@ builder.Services
     .AddEntityFrameworkStores<AppDbContext>();
 
 // Add services to the container.
+
+builder.Services.AddCors();
 
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
@@ -34,6 +37,14 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+
+app.UseCors(
+    options => options
+        .SetIsOriginAllowed(origin => new Uri(origin).Host == "localhost")
+        .AllowAnyMethod()
+        .AllowAnyHeader()
+        .AllowCredentials()
+);
 
 app.UseAuthorization();
 
