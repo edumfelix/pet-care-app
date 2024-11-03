@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:frontend_pet_care/pages/loggedIn.dart';
 import 'pages/login.dart';
 import 'pages/signup.dart';
 
@@ -12,16 +13,16 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Home Page',
+      title: 'Pet Care',
       theme: ThemeData(
-      
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+        colorScheme: ColorScheme.fromSeed(seedColor: Colors.purple),
         useMaterial3: true,
       ),
       home: const MyHomePage(title: 'Home Page'),
       routes: {
         '/signup': (context) => const SignupPage(),
         '/login': (context) => const LoginPage(),
+        '/loggedin': (context) => const LoggedInPage(),
       },
     );
   }
@@ -39,31 +40,48 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) {
-
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-        title: Text(widget.title),
+        title: const Text("Home Page"),
       ),
       body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            ElevatedButton(
-              onPressed: () {
-                Navigator.pushNamed(context, '/signup');
-              },
-              child: const Text('Sign Up'),
-            ),
-            const SizedBox(height: 10),
-            ElevatedButton(
-              onPressed: () {
-                Navigator.pushNamed(context, '/login');
-              },
-              child: const Text('Login'),
-            ),
-            const SizedBox(height: 10),
-          ],
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: <Widget>[
+              const SizedBox(height: 20),
+              ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                  minimumSize: const Size.fromHeight(50),
+                  textStyle: const TextStyle(fontSize: 18),
+                  backgroundColor: Colors.purple,
+                ),
+                onPressed: () {
+                  Navigator.pushNamed(context, '/signup');
+                },
+                child: const Text(
+                  'Sign Up',
+                  style: TextStyle(fontSize: 20, color: Colors.white)
+                ),
+              ),
+              const SizedBox(height: 10),
+              ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                  minimumSize: const Size.fromHeight(50),
+                  textStyle: const TextStyle(fontSize: 18),
+                  backgroundColor: Colors.purple,
+                ),
+                onPressed: () {
+                  Navigator.pushNamed(context, '/login');
+                },
+                child: const Text(
+                  'Login',
+                   style: TextStyle(fontSize: 20, color: Colors.white)
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );
