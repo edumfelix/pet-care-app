@@ -154,6 +154,83 @@ namespace PetCareWebApi.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
+            modelBuilder.Entity("PetCareWebApi.Models.Consulta", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint")
+                        .HasColumnName("id");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Id"));
+
+                    b.Property<long?>("IdHorario")
+                        .IsRequired()
+                        .HasColumnType("bigint")
+                        .HasColumnName("horario");
+
+                    b.Property<string>("IdTutor")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("idTutor");
+
+                    b.Property<string>("IdVeterinario")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("idVeterinario");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("consulta");
+                });
+
+            modelBuilder.Entity("PetCareWebApi.Models.Dieta", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint")
+                        .HasColumnName("id");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Id"));
+
+                    b.Property<long?>("IdConsulta")
+                        .IsRequired()
+                        .HasColumnType("bigint")
+                        .HasColumnName("idConsulta");
+
+                    b.Property<string>("RefeicoesJson")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("refeicoes");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("dieta");
+                });
+
+            modelBuilder.Entity("PetCareWebApi.Models.HorarioConsulta", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint")
+                        .HasColumnName("id");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Id"));
+
+                    b.Property<bool?>("Disponibilidade")
+                        .IsRequired()
+                        .HasColumnType("boolean")
+                        .HasColumnName("disponibilidade");
+
+                    b.Property<string>("Horario")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("horario");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("horarioConsulta");
+                });
+
             modelBuilder.Entity("PetCareWebApi.Models.User", b =>
                 {
                     b.Property<string>("Id")
