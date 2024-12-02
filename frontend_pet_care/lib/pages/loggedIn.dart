@@ -17,8 +17,6 @@ class _LoggedInPageState extends State<LoggedInPage> {
   }
 
   void _checkLoginStatus() {
-    // Simula a verificação de login
-    // Aqui você pode substituir pela lógica real de verificação de login
     setState(() {
       _isLoggedIn = true; // Defina como falso para simular usuário não logado
     });
@@ -35,6 +33,13 @@ class _LoggedInPageState extends State<LoggedInPage> {
   }
 
   Widget _buildLoggedIn() {
+    final ButtonStyle buttonStyle = ElevatedButton.styleFrom(
+      minimumSize: const Size(200, 50), // Define o tamanho fixo
+      shape: const StadiumBorder(),
+      backgroundColor: Colors.purple,
+      padding: const EdgeInsets.symmetric(vertical: 16),
+    );
+
     return Scaffold(
       appBar: AppBar(
         title: const Text("Logged In"),
@@ -59,13 +64,43 @@ class _LoggedInPageState extends State<LoggedInPage> {
               const SizedBox(height: 40),
               ElevatedButton(
                 onPressed: () {
-                  Navigator.pushNamedAndRemoveUntil(context, '/', (route) => false);
+                  Navigator.pushNamed(context, '/dieta');
                 },
-                style: ElevatedButton.styleFrom(
-                  shape: const StadiumBorder(),
-                  padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 32),
-                  backgroundColor: Colors.purple,
+                style: buttonStyle,
+                child: const Text(
+                  "Dieta",
+                  style: TextStyle(fontSize: 20, color: Colors.white),
                 ),
+              ),
+              const SizedBox(height: 20),
+              ElevatedButton(
+                onPressed: () {
+                  Navigator.pushNamed(context, '/consulta');
+                },
+                style: buttonStyle,
+                child: const Text(
+                  "Consulta",
+                  style: TextStyle(fontSize: 20, color: Colors.white),
+                ),
+              ),
+              const SizedBox(height: 20),
+              ElevatedButton(
+                onPressed: () {
+                  Navigator.pushNamed(context, '/horario-consulta');
+                },
+                style: buttonStyle,
+                child: const Text(
+                  "Horário de Consulta",
+                  style: TextStyle(fontSize: 20, color: Colors.white),
+                ),
+              ),
+              const SizedBox(height: 40),
+              ElevatedButton(
+                onPressed: () {
+                  Navigator.pushNamedAndRemoveUntil(
+                      context, '/', (route) => false);
+                },
+                style: buttonStyle,
                 child: const Text(
                   "Logout",
                   style: TextStyle(fontSize: 20, color: Colors.white),
@@ -80,6 +115,6 @@ class _LoggedInPageState extends State<LoggedInPage> {
 
   @override
   Widget build(BuildContext context) {
-    return _isLoggedIn ? _buildLoggedIn() : Scaffold();
+    return _isLoggedIn ? _buildLoggedIn() : const Scaffold();
   }
 }
