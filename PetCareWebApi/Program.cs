@@ -1,8 +1,11 @@
+using AutoMapper;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using PetCareWebApi.Config;
 using PetCareWebApi.Data;
 using PetCareWebApi.Models;
+using PetCareWebApi.Repository;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -10,6 +13,16 @@ var connectionString = builder.Configuration.GetConnectionString("PsqlConnection
 
 builder.Services.AddDbContext<AppDbContext>(
     options => options.UseNpgsql(connectionString));
+
+IMapper mapper = MappingConfig.RegisterMaps().CreateMapper();
+builder.Services.AddSingleton(mapper);
+builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
+
+builder.Services.AddScoped<IHorarioConsultaRepository, HorarioConsultaRepository>();
+builder.Services.AddScoped<IConsultaRepository, ConsultaRepository>();
+builder.Services.AddScoped<IDietaRepository, DietaRepository>();
+
+builder.Services.AddControllers();
 
 builder.Services.AddAuthentication();
 builder.Services.AddAuthorization();
