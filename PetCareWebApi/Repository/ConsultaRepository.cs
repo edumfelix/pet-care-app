@@ -3,11 +3,12 @@ using Microsoft.EntityFrameworkCore;
 using PetCareWebApi.Controllers.Data.ValueObject;
 using PetCareWebApi.Data;
 using PetCareWebApi.Models;
+using PetCareWebApi.Patterns.Observer.Base;
 
 namespace PetCareWebApi.Repository
     {
-    public class ConsultaRepository : IConsultaRepository
-        {
+    public class ConsultaRepository : NotificationSubject,IConsultaRepository
+    {
         private readonly AppDbContext _context;
         private IMapper _mapper;
 
@@ -16,13 +17,20 @@ namespace PetCareWebApi.Repository
             _context = context;
             _mapper = mapper;
             }
-        public async Task<ConsultaVO> Create(ConsultaVO vo) 
-            {
+
+        public async Task<ConsultaVO> Create(ConsultaVO vo)
+        {
             Consulta consulta = _mapper.Map<Consulta>(vo);
             _context.Consultas.Add(consulta);
             await _context.SaveChangesAsync();
-            return _mapper.Map<ConsultaVO>(consulta);
-            }
+
+            // Notificar observers
+            var consultaVO = _mapper.Map<ConsultaVO>(consulta);
+            await NotifyObservers("Consulta Criada", consultaVO);
+
+            return consultaVO;
+        }
+
         public async Task<bool> Delete(long id) 
             {
             try

@@ -12,8 +12,8 @@ using PetCareWebApi.Data;
 namespace PetCareWebApi.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20241201231355_v2")]
-    partial class v2
+    [Migration("20250210000100_InitialCreate")]
+    partial class InitialCreate
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -184,30 +184,6 @@ namespace PetCareWebApi.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("consulta");
-                });
-
-            modelBuilder.Entity("PetCareWebApi.Models.Dieta", b =>
-                {
-                    b.Property<long>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint")
-                        .HasColumnName("id");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Id"));
-
-                    b.Property<long?>("IdConsulta")
-                        .IsRequired()
-                        .HasColumnType("bigint")
-                        .HasColumnName("idConsulta");
-
-                    b.Property<string>("RefeicoesJson")
-                        .IsRequired()
-                        .HasColumnType("text")
-                        .HasColumnName("refeicoes");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("dieta");
                 });
 
             modelBuilder.Entity("PetCareWebApi.Models.HorarioConsulta", b =>

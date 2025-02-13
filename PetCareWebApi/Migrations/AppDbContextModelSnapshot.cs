@@ -183,30 +183,6 @@ namespace PetCareWebApi.Migrations
                     b.ToTable("consulta");
                 });
 
-            modelBuilder.Entity("PetCareWebApi.Models.Dieta", b =>
-                {
-                    b.Property<long>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint")
-                        .HasColumnName("id");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Id"));
-
-                    b.Property<long?>("IdConsulta")
-                        .IsRequired()
-                        .HasColumnType("bigint")
-                        .HasColumnName("idConsulta");
-
-                    b.Property<string>("RefeicoesJson")
-                        .IsRequired()
-                        .HasColumnType("text")
-                        .HasColumnName("refeicoes");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("dieta");
-                });
-
             modelBuilder.Entity("PetCareWebApi.Models.HorarioConsulta", b =>
                 {
                     b.Property<long>("Id")

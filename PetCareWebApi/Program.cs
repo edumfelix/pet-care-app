@@ -5,6 +5,9 @@ using Microsoft.EntityFrameworkCore;
 using PetCareWebApi.Config;
 using PetCareWebApi.Data;
 using PetCareWebApi.Models;
+using PetCareWebApi.Patterns.Observer.Base;
+using PetCareWebApi.Patterns.Observer.Interfaces;
+using PetCareWebApi.Patterns.Observer.Observers;
 using PetCareWebApi.Repository;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -16,11 +19,26 @@ builder.Services.AddDbContext<AppDbContext>(
 
 IMapper mapper = MappingConfig.RegisterMaps().CreateMapper();
 builder.Services.AddSingleton(mapper);
+builder.Services.AddSingleton<NotificationSubject>(provider =>
+{
+    var subject = new NotificationSubject();
+
+    // Registrando os observadores como IObserver
+    var emailObserver = provider.GetRequiredService<EmailNotificationObserver>();
+    var horarioObserver = provider.GetRequiredService<HorarioUpdateObserver>();
+
+    subject.Attach(emailObserver);
+    subject.Attach(horarioObserver);
+
+    return subject;
+});
+
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
 builder.Services.AddScoped<IHorarioConsultaRepository, HorarioConsultaRepository>();
 builder.Services.AddScoped<IConsultaRepository, ConsultaRepository>();
-builder.Services.AddScoped<IDietaRepository, DietaRepository>();
+builder.Services.AddScoped<IObserver, EmailNotificationObserver>();
+builder.Services.AddScoped<IObserver, HorarioUpdateObserver>();
 
 builder.Services.AddControllers();
 

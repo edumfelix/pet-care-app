@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:frontend_pet_care/pages/loggedIn.dart';
 import 'pages/login.dart';
 import 'pages/signup.dart';
-import 'pages/dietPage.dart';
 import 'pages/horarioConsultaPage.dart';
 import 'pages/consultaPage.dart';
 
@@ -26,7 +25,6 @@ class MyApp extends StatelessWidget {
         '/signup': (context) => const SignupPage(),
         '/login': (context) => const LoginPage(),
         '/loggedin': (context) => const LoggedInPage(),
-        '/dieta': (context) => const DietPage(),
         '/horario-consulta': (context) => const HorarioConsultaPage(),
         '/consulta': (context) => const ConsultaPage(),
       },

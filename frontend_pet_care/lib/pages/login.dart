@@ -89,7 +89,7 @@ class _LoginPageState extends State<LoginPage> {
               borderRadius: BorderRadius.circular(18),
               borderSide: BorderSide.none,
             ),
-            fillColor: Colors.purple.withOpacity(0.1),
+            fillColor: Colors.brown.withOpacity(0.1),
             filled: true,
             prefixIcon: const Icon(Icons.mail),
           ),
@@ -103,7 +103,7 @@ class _LoginPageState extends State<LoginPage> {
               borderRadius: BorderRadius.circular(18),
               borderSide: BorderSide.none,
             ),
-            fillColor: Colors.purple.withOpacity(0.1),
+            fillColor: Colors.brown.withOpacity(0.1),
             filled: true,
             prefixIcon: const Icon(Icons.password),
           ),
@@ -115,7 +115,7 @@ class _LoginPageState extends State<LoginPage> {
           style: ElevatedButton.styleFrom(
             shape: const StadiumBorder(),
             padding: const EdgeInsets.symmetric(vertical: 16),
-            backgroundColor: Colors.purple,
+            backgroundColor: Colors.brown,
           ),
           child: const Text(
             "Login",
@@ -131,7 +131,7 @@ class _LoginPageState extends State<LoginPage> {
       onPressed: () {},
       child: const Text(
         "Forgot password?",
-        style: TextStyle(color: Colors.purple),
+        style: TextStyle(color: Colors.brown),
       ),
     );
   }
@@ -147,7 +147,7 @@ class _LoginPageState extends State<LoginPage> {
           },
           child: const Text(
             "Sign Up",
-            style: TextStyle(color: Colors.purple),
+            style: TextStyle(color: Colors.brown),
           ),
         ),
       ],

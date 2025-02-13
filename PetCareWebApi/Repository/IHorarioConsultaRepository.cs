@@ -9,5 +9,5 @@ namespace PetCareWebApi.Repository
         Task<HorarioConsultaVO> Create(HorarioConsultaVO vo);
         Task<HorarioConsultaVO> Update(HorarioConsultaVO vo);
         Task<bool> Delete(long id);
-        }
+    }
     }

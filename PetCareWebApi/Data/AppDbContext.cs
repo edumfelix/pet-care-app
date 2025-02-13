@@ -12,7 +12,6 @@ namespace PetCareWebApi.Data
         }
 
         public DbSet<Consulta> Consultas { get; set; }
-        public DbSet<Dieta> Dietas { get; set; }
         public DbSet<HorarioConsulta> HorarioConsultas { get; set; }
         }
 }

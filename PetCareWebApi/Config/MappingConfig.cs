@@ -13,9 +13,6 @@ namespace PetCareWebApi.Config
                 config.CreateMap<ConsultaVO, Consulta>();
                 config.CreateMap<Consulta, ConsultaVO>();
 
-                config.CreateMap<DietaVO, Dieta>();
-                config.CreateMap<Dieta, DietaVO>();
-
                 config.CreateMap<HorarioConsultaVO, HorarioConsulta>();
                 config.CreateMap<HorarioConsulta, HorarioConsultaVO>();
             });
