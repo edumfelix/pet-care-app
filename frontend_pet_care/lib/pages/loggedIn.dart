@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 class LoggedInPage extends StatefulWidget {
   const LoggedInPage({super.key});
@@ -9,20 +10,29 @@ class LoggedInPage extends StatefulWidget {
 
 class _LoggedInPageState extends State<LoggedInPage> {
   bool _isLoggedIn = false;
+  final FlutterSecureStorage _secureStorage = const FlutterSecureStorage();
 
   @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
+  void initState() {
+    super.initState();
     _checkLoginStatus();
   }
 
-  void _checkLoginStatus() {
-    setState(() {
-      _isLoggedIn = true; // Defina como falso para simular usuário não logado
-    });
-
-    if (!_isLoggedIn) {
-      _redirectToLogin();
+  void _checkLoginStatus() async {
+    try {
+      String? token = await _secureStorage.read(key: 'jwt_token');
+      if (token == null || token.isEmpty) {
+        _redirectToLogin();
+      } else {
+        setState(() {
+          _isLoggedIn = true;
+        });
+      }
+    } catch (e) {
+      // Tratar erro na leitura do storage
+      print('Erro ao ler token: $e');
+      _showSnackBar('Erro ao verificar login.');
+      _redirectToLogin(); // Redireciona para o login em caso de erro
     }
   }
 
@@ -32,11 +42,28 @@ class _LoggedInPageState extends State<LoggedInPage> {
     });
   }
 
+  void _logout() async {
+    try {
+      await _secureStorage.delete(key: 'jwt_token');
+      _showSnackBar('Logout realizado com sucesso!'); // Feedback ao usuário
+      Navigator.pushNamedAndRemoveUntil(context, '/login', (route) => false); // Redireciona para /login
+    } catch (e) {
+      print('Erro durante o logout: $e');
+      _showSnackBar('Erro durante o logout.');
+    }
+  }
+
+  void _showSnackBar(String message) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text(message)),
+    );
+  }
+
   Widget _buildLoggedIn() {
     final ButtonStyle buttonStyle = ElevatedButton.styleFrom(
       minimumSize: const Size(200, 50), // Define o tamanho fixo
       shape: const StadiumBorder(),
-      backgroundColor: Colors.purple,
+      backgroundColor: Colors.brown,
       padding: const EdgeInsets.symmetric(vertical: 16),
     );
 
@@ -61,17 +88,6 @@ class _LoggedInPageState extends State<LoggedInPage> {
                 style: Theme.of(context).textTheme.headlineMedium,
                 textAlign: TextAlign.center,
               ),
-              const SizedBox(height: 40),
-              ElevatedButton(
-                onPressed: () {
-                  Navigator.pushNamed(context, '/dieta');
-                },
-                style: buttonStyle,
-                child: const Text(
-                  "Dieta",
-                  style: TextStyle(fontSize: 20, color: Colors.white),
-                ),
-              ),
               const SizedBox(height: 20),
               ElevatedButton(
                 onPressed: () {
@@ -79,26 +95,25 @@ class _LoggedInPageState extends State<LoggedInPage> {
                 },
                 style: buttonStyle,
                 child: const Text(
-                  "Consulta",
+                  "Agendar Consulta",
                   style: TextStyle(fontSize: 20, color: Colors.white),
                 ),
               ),
               const SizedBox(height: 20),
               ElevatedButton(
                 onPressed: () {
-                  Navigator.pushNamed(context, '/horario-consulta');
+                  Navigator.pushNamed(context, '/classificar-imagem');
                 },
                 style: buttonStyle,
                 child: const Text(
-                  "Horário de Consulta",
+                  "Classificar Imagem",
                   style: TextStyle(fontSize: 20, color: Colors.white),
                 ),
               ),
               const SizedBox(height: 40),
               ElevatedButton(
                 onPressed: () {
-                  Navigator.pushNamedAndRemoveUntil(
-                      context, '/', (route) => false);
+                  _logout();
                 },
                 style: buttonStyle,
                 child: const Text(
@@ -115,6 +130,10 @@ class _LoggedInPageState extends State<LoggedInPage> {
 
   @override
   Widget build(BuildContext context) {
-    return _isLoggedIn ? _buildLoggedIn() : const Scaffold();
+    return _isLoggedIn
+        ? _buildLoggedIn()
+        : const Scaffold(
+            body: Center(child: CircularProgressIndicator()),
+          );
   }
 }

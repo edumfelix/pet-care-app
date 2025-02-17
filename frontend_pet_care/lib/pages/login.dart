@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 
@@ -13,34 +14,64 @@ class _LoginPageState extends State<LoginPage> {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
 
+  @override
+  void dispose() {
+    _emailController.dispose();
+    _passwordController.dispose();
+    super.dispose();
+  }
+
   Future<void> _login() async {
     final String email = _emailController.text;
     final String password = _passwordController.text;
 
-    final response = await http.post(
-      Uri.parse('https://localhost:7224/login'),
-      headers: <String, String>{
-        'Content-Type': 'application/json; charset=UTF-8',
-      },
-      body: jsonEncode(<String, String>{
-        'email': email,
-        'password': password,
-      }),
-    );
+    try {
+      final response = await http.post(
+        Uri.parse('https://localhost:7224/login'),
+        headers: <String, String>{
+          'Content-Type': 'application/json; charset=UTF-8',
+        },
+        body: jsonEncode(<String, String>{
+          'email': email,
+          'password': password,
+        }),
+      );
 
-    if (response.statusCode == 200) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Login successful'),
-        ),
-      );
-      Navigator.pushNamed(context, '/loggedin');
-    } else {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Login failed'),
-        ),
-      );
+      if (response.statusCode == 200) {
+        final responseData = jsonDecode(response.body);
+        final token = responseData['accessToken'];
+
+        final storage = const FlutterSecureStorage();
+        await storage.write(key: 'jwt_token', value: token);
+        
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Text('Login successful'),
+              backgroundColor: Colors.green,
+            ),
+          );
+          Navigator.pushNamed(context, '/loggedin');
+        }
+      } else {
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Text('Login failed'),
+              backgroundColor: Colors.red,
+            ),
+          );
+        }
+      }
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Error: ${e.toString()}'),
+            backgroundColor: Colors.red,
+          ),
+        );
+      }
     }
   }
 
@@ -49,17 +80,22 @@ class _LoginPageState extends State<LoginPage> {
     return Scaffold(
       appBar: AppBar(
         title: const Text("Login"),
+        backgroundColor: Colors.brown,
+        foregroundColor: Colors.white,
       ),
-      body: Container(
-        margin: const EdgeInsets.all(24),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          children: [
-            _header(context),
-            _inputField(context),
-            _forgotPassword(context),
-            _signup(context),
-          ],
+      body: SingleChildScrollView(
+        child: Container(
+          margin: const EdgeInsets.all(24),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: [
+              _header(context),
+              const SizedBox(height: 50),
+              _inputField(context),
+              _forgotPassword(context),
+              _signup(context),
+            ],
+          ),
         ),
       ),
     );
@@ -83,6 +119,7 @@ class _LoginPageState extends State<LoginPage> {
       children: [
         TextField(
           controller: _emailController,
+          keyboardType: TextInputType.emailAddress,
           decoration: InputDecoration(
             hintText: "Email",
             border: OutlineInputBorder(
@@ -91,12 +128,17 @@ class _LoginPageState extends State<LoginPage> {
             ),
             fillColor: Colors.brown.withOpacity(0.1),
             filled: true,
-            prefixIcon: const Icon(Icons.mail),
+            prefixIcon: const Icon(Icons.mail, color: Colors.brown),
+            focusedBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(18),
+              borderSide: const BorderSide(color: Colors.brown),
+            ),
           ),
         ),
         const SizedBox(height: 10),
         TextField(
           controller: _passwordController,
+          obscureText: true,
           decoration: InputDecoration(
             hintText: "Password",
             border: OutlineInputBorder(
@@ -105,11 +147,14 @@ class _LoginPageState extends State<LoginPage> {
             ),
             fillColor: Colors.brown.withOpacity(0.1),
             filled: true,
-            prefixIcon: const Icon(Icons.password),
+            prefixIcon: const Icon(Icons.password, color: Colors.brown),
+            focusedBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(18),
+              borderSide: const BorderSide(color: Colors.brown),
+            ),
           ),
-          obscureText: true,
         ),
-        const SizedBox(height: 10),
+        const SizedBox(height: 20),
         ElevatedButton(
           onPressed: _login,
           style: ElevatedButton.styleFrom(
