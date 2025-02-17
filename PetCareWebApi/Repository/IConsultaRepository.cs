@@ -1,4 +1,5 @@
 ﻿using PetCareWebApi.Controllers.Data.ValueObject;
+using PetCareWebApi.Models;
 
 namespace PetCareWebApi.Repository
     {

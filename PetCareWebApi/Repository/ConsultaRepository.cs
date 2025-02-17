@@ -11,11 +11,13 @@ namespace PetCareWebApi.Repository
     {
         private readonly AppDbContext _context;
         private IMapper _mapper;
+        private ILogger _logger;
 
-        public ConsultaRepository(AppDbContext context, IMapper mapper)
+        public ConsultaRepository(AppDbContext context, IMapper mapper, ILogger<ConsultaRepository> logger)
             {
             _context = context;
             _mapper = mapper;
+            _logger = logger;
             }
 
         public async Task<ConsultaVO> Create(ConsultaVO vo)
@@ -31,13 +33,11 @@ namespace PetCareWebApi.Repository
             return consultaVO;
         }
 
-        public async Task<bool> Delete(long id) 
-            {
+        public async Task<bool> Delete(long id)
+        {
             try
-                {
-                Consulta? consulta = await _context.Consultas
-                    .Where(s => s.Id == id)
-                    .FirstOrDefaultAsync();
+            {
+                var consulta = await _context.Consultas.FirstOrDefaultAsync(s => s.Id == id);
 
                 if (consulta == null)
                     return false;
@@ -45,12 +45,19 @@ namespace PetCareWebApi.Repository
                 _context.Consultas.Remove(consulta);
                 await _context.SaveChangesAsync(true);
                 return true;
-                }
-            catch (Exception)
-                {
-                return false;
-                }
             }
+            catch (DbUpdateException ex)
+            {
+                _logger.LogError(ex, "Erro ao excluir a consulta com ID {Id}", id);
+                throw new ApplicationException("Erro ao excluir a consulta.", ex);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Erro inesperado ao excluir a consulta com ID {Id}", id);
+                throw;
+            }
+        }
+
         public async Task<IEnumerable<ConsultaVO>> FindAll() 
             {
             List<Consulta> consultas = await _context.Consultas.ToListAsync();
@@ -64,6 +71,7 @@ namespace PetCareWebApi.Repository
 
             return _mapper.Map<ConsultaVO>(consulta);
             }
+
         public async Task<ConsultaVO> Update(ConsultaVO vo) 
             {
             Consulta consulta = _mapper.Map<Consulta>(vo);
