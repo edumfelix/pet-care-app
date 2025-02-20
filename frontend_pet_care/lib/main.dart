@@ -28,7 +28,7 @@ class MyApp extends StatelessWidget {
         '/loggedin': (context) => const LoggedInPage(),
         '/horario-consulta': (context) =>  const HorarioConsultaPage(),
         '/consulta': (context) => const ConsultaPage(),
-        '/classificar-imagem': (context) => ClassificarImagemPage(),
+        '/classificar-imagem': (context) => const ClassificarImagemPage(),
       },
     );
   }

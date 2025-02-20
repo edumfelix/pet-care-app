@@ -41,7 +41,7 @@ class _LoginPageState extends State<LoginPage> {
         final responseData = jsonDecode(response.body);
         final token = responseData['accessToken'];
 
-        final storage = const FlutterSecureStorage();
+        const storage = FlutterSecureStorage();
         await storage.write(key: 'jwt_token', value: token);
         
         if (mounted) {
