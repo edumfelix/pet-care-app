@@ -5,10 +5,10 @@ namespace PetCareWebApi.Repository
     {
     public interface IConsultaRepository
         {
-        Task<IEnumerable<ConsultaVO>> FindAll();
-        Task<ConsultaVO> FindById(long id);
-        Task<ConsultaVO> Create(ConsultaVO vo);
-        Task<ConsultaVO> Update(ConsultaVO vo);
+        Task<IEnumerable<Consulta>> FindAll();
+        Task<Consulta> FindById(long id);
+        Task<Consulta> Create(Consulta consulta);
+        Task<Consulta> Update(Consulta consulta);
         Task<bool> Delete(long id);
         }
     }

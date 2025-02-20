@@ -9,11 +9,11 @@ namespace PetCareWebApi.Repository
     {
     public class HorarioConsultaRepository : IHorarioConsultaRepository
         {
-        private readonly AppDbContext _context;
+        private readonly IAppDbContext _context;
         private IMapper _mapper;
         private HorarioCache _cache;
 
-        public HorarioConsultaRepository(AppDbContext context, IMapper mapper)
+        public HorarioConsultaRepository(IAppDbContext context, IMapper mapper)
             {
             _context = context;
             _mapper = mapper;
@@ -42,7 +42,7 @@ namespace PetCareWebApi.Repository
                     return false;
 
                 _context.HorarioConsultas.Remove(horarioConsulta);
-                await _context.SaveChangesAsync(true);
+                await _context.SaveChangesAsync();
 
                 _cache.Remove(id);
                 return true;
@@ -77,7 +77,6 @@ namespace PetCareWebApi.Repository
             {
                 _cache.AddOrUpdate(horarioVO);
             }
-
             return horarioVO;
         }
         public async Task<HorarioConsultaVO> Update(HorarioConsultaVO vo)
